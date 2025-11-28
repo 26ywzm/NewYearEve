@@ -28,7 +28,6 @@
       color: inherit;
     }
 
-    /* 顶部导航 */
     /* 顶部导航（胶囊悬浮效果） */
     header {
       position: fixed;
@@ -37,7 +36,6 @@
       right: 0;
       z-index: 100;
       pointer-events: none;
-      /* 只让里面的导航可点 */
     }
 
     .nav {
@@ -142,7 +140,6 @@
       font-size: 13px;
     }
 
-    /* “新年祝福”“愿望清单”前加小图标 */
     #navBlessings::before {
       content: "🎊";
       font-size: 13px;
@@ -163,7 +160,6 @@
 
       .nav-logo span {
         display: none;
-        /* 小屏只显示圆形图标 */
       }
 
       .nav-links {
@@ -175,13 +171,11 @@
       }
     }
 
-
     /* 主体容器 */
     main {
       max-width: 1100px;
       margin: 0 auto;
       padding: 100px 16px 40px;
-      /* 留出顶部导航高度 */
     }
 
     /* 英雄区域：倒计时 */
@@ -212,7 +206,6 @@
         radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.3) 0, transparent 50%),
         radial-gradient(circle at 80% 0%, rgba(255, 99, 71, 0.25) 0, transparent 55%);
       pointer-events: none;
-      /* 不挡住下面的点击 */
     }
 
     .hero-left,
@@ -393,14 +386,13 @@
       font-size: 11px;
     }
 
-    /* 新：爆炸烟花背景 */
+    /* 烟花背景 */
     #fireworksCanvas {
       position: fixed;
       inset: 0;
       z-index: 0;
       pointer-events: none;
     }
-
 
     /* 祝福区块 */
     section {
@@ -444,7 +436,6 @@
       opacity: 0;
       transition: opacity 0.3s ease;
       pointer-events: none;
-      /* 防止挡住 textarea 和按钮点击 */
     }
 
     .card:hover::before {
@@ -603,17 +594,14 @@
       font-size: 13px;
       border: 1px solid rgba(0, 0, 0, 0.08);
       opacity: 0;
-      /* 初始不可见 */
       transform: translateY(8px) scale(0.92);
     }
 
-    /* 小窗出现后添加 .show 类，执行弹出 + 轻微浮动动画 */
     .blessing-window.show {
       opacity: 1;
       animation: blessing-in 0.35s ease-out,
         blessing-float 6s ease-in-out infinite;
     }
-
 
     .blessing-window-header {
       height: 30px;
@@ -673,7 +661,6 @@
       }
     }
 
-
     /* ========= 音乐控制按钮 ========= */
     .music-control {
       position: fixed;
@@ -699,6 +686,49 @@
     .music-control:hover {
       background: rgba(0, 0, 0, 0.7);
     }
+
+    /* ========= 轻量文字烟花（DOM 小标签） ========= */
+    .text-firework {
+      position: fixed;
+      left: 0;
+      top: 0;
+      transform: translate(-50%, -50%) scale(0.7);
+      font-size: 28px;
+      font-weight: 800;
+      color: #ffeaa7;
+      text-shadow:
+        0 0 8px rgba(255, 223, 128, 0.9),
+        0 0 18px rgba(255, 140, 80, 0.9);
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+      animation: text-firework-pop 1.8s ease-out forwards;
+      white-space: nowrap;
+    }
+
+    @keyframes text-firework-pop {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+      }
+
+      25% {
+        opacity: 1;
+        transform: translate(-50%, -60%) scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -70%) scale(1.2);
+      }
+    }
+
+    /* 自定义文字烟花输入区域的小提示 */
+    .hint-text {
+      font-size: 11px;
+      opacity: 0.8;
+      margin-top: 6px;
+    }
   </style>
 </head>
 
@@ -706,9 +736,9 @@
   <!-- 烟花背景 -->
   <canvas id="fireworksCanvas"></canvas>
 
-  <!-- 背景音乐（请把 music.mp3 放在同目录下，或者改成自己的音乐地址） -->
+  <!-- 背景音乐 -->
   <audio id="bgm" loop>
-    <!-- 例如：<source src="music.mp3" type="audio/mpeg" /> -->
+    <!-- <source src="music.mp3" type="audio/mpeg" /> -->
   </audio>
 
   <!-- 音乐控制按钮 -->
@@ -745,7 +775,7 @@
     <div class="fullscreen-status" id="bigStatus">跨年即将到来…</div>
   </div>
 
-  <!-- 新年祝福覆盖层：小窗在 JS 里动态生成 -->
+  <!-- 新年祝福覆盖层 -->
   <div class="blessing-overlay" id="blessingOverlay">
     <button class="fullscreen-close" id="closeBlessing">关闭 ✕</button>
   </div>
@@ -861,7 +891,7 @@
       </div>
     </section>
 
-    <!-- 愿望清单 -->
+    <!-- 愿望清单 + 自定义文字烟花面板 -->
     <section id="wishes">
       <h2 class="section-title">
         <span class="section-title-icon">📝</span>
@@ -891,7 +921,8 @@
             在下面输入你的新年愿望，点击“保存愿望”，它会保存在当前设备的浏览器中，
             下次打开这个页面时依然可以看到（不会上传到服务器）。
           </p>
-          <textarea id="wishInput" rows="4" placeholder="例如：希望顺利通过考试 / 找到理想工作 / 去一次想去很久的城市..."
+          <textarea id="wishInput" rows="4"
+            placeholder="例如：希望顺利通过考试 / 找到理想工作 / 去一次想去很久的城市..."
             style="width: 100%; resize: vertical; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); padding: 8px 10px; background: rgba(0,0,0,0.35); color: #fff; font-size: 13px; outline: none;"></textarea>
           <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px; flex-wrap:wrap;">
             <button class="btn-ghost" id="clearWish">
@@ -901,7 +932,31 @@
               保存愿望
             </button>
           </div>
-          <p id="wishSavedHint" style="font-size:11px; opacity:0.8; margin-top:6px;"></p>
+          <p id="wishSavedHint" class="hint-text"></p>
+        </article>
+
+        <!-- ⭐ 新增：自定义文字烟花控制面板 -->
+        <article class="card">
+          <h3 class="card-title">
+            🔤 自定义文字烟花
+            <span class="card-tag">点击立刻绽放</span>
+          </h3>
+          <p class="card-body" style="margin-bottom:6px;">
+            在这里输入一句话，比如 <b>“2025 加油”</b> / <b>“新年快乐”</b> / <b>“某某我喜欢你”</b>，
+            然后点击按钮，就会在屏幕中间或者随机位置绽放一朵「文字烟花」～✨
+          </p>
+          <input id="customTextInput" type="text"
+            placeholder="例如：2025 一切顺利 / 某某新年快乐"
+            style="width:100%; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18); padding: 8px 12px; background: rgba(0,0,0,0.35); color:#fff; font-size:13px; outline:none; margin-bottom:8px;">
+          <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end;">
+            <button class="btn-ghost" id="customTextCenterBtn">
+              居中绽放
+            </button>
+            <button class="btn-primary" id="customTextRandomBtn">
+              随机绽放
+            </button>
+          </div>
+          <p id="customTextHint" class="hint-text"></p>
         </article>
       </div>
     </section>
@@ -917,7 +972,7 @@
 
   <script>
     // ================== 跨年时间设置 ==================
-    const targetDate = new Date("2025-12-31T23:59:59"); // 本地时间
+    const targetDate = new Date("2025-12-31T23:59:59");
 
     const targetTextEl = document.getElementById("countdownTargetText");
     if (targetTextEl) {
@@ -929,7 +984,7 @@
       targetTextEl.textContent = `${y}年${m}月${d}日 ${hh}:${mm}`;
     }
 
-    // ================== 倒计时逻辑（小卡片 + 大全屏 共用） ==================
+    // ================== 倒计时逻辑 ==================
     const daysEl = document.getElementById("days");
     const hoursEl = document.getElementById("hours");
     const minutesEl = document.getElementById("minutes");
@@ -1017,7 +1072,7 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // ================== 滚动按钮 ==================
+    // ================== 滚动 & 导航 ==================
     document.getElementById("scrollToBlessings")?.addEventListener("click", () => {
       document.getElementById("blessings")?.scrollIntoView({ behavior: "smooth" });
     });
@@ -1026,7 +1081,6 @@
       document.getElementById("wishes")?.scrollIntoView({ behavior: "smooth" });
     });
 
-    // ================== 导航栏：全屏大倒计时 ==================
     const navCountdownLink = document.getElementById("navCountdown");
     const fullscreenCountdown = document.getElementById("fullscreenCountdown");
     const closeFullscreenBtn = document.getElementById("closeFullscreen");
@@ -1046,7 +1100,7 @@
       }
     });
 
-    // ================== 导航栏：新年祝福小窗铺满效果 ==================
+    // ================== 新年祝福小窗覆盖层 ==================
     const navBlessingsLink = document.getElementById("navBlessings");
     const blessingOverlay = document.getElementById("blessingOverlay");
     const blessingCloseBtn = document.getElementById("closeBlessing");
@@ -1080,10 +1134,9 @@
     }
 
     function createBlessingWindows() {
-      // 清理旧的小窗和计时器
       cleanupBlessingWindows();
 
-      const count = 30; // 一共弹多少个小窗
+      const count = 30;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       let created = 0;
@@ -1125,7 +1178,6 @@
         win.appendChild(title);
         win.appendChild(body);
 
-        // 随机位置（预留一点边距，避免完全贴边）
         const w = 260;
         const h = 110;
         const maxLeft = Math.max(0, vw - w - 20);
@@ -1138,13 +1190,12 @@
 
         blessingOverlay.appendChild(win);
 
-        // 下一帧再加 .show，触发 CSS 动画
         requestAnimationFrame(() => {
           win.classList.add("show");
         });
 
         created++;
-      }, 170); // 每 180ms 出现一个小窗，可以根据感觉调快/调慢
+      }, 170);
     }
 
     navBlessingsLink?.addEventListener("click", (e) => {
@@ -1158,7 +1209,6 @@
       cleanupBlessingWindows();
     });
 
-    // 点击遮罩空白处关闭
     blessingOverlay?.addEventListener("click", (e) => {
       if (e.target === blessingOverlay) {
         blessingOverlay.classList.remove("active");
@@ -1166,8 +1216,7 @@
       }
     });
 
-
-    // ================== 愿望本地保存（localStorage） ==================
+    // ================== 愿望本地保存 ==================
     const wishInput = document.getElementById("wishInput");
     const saveWishBtn = document.getElementById("saveWish");
     const clearWishBtn = document.getElementById("clearWish");
@@ -1245,8 +1294,7 @@
       }
     });
 
-    // 背景烟花特效
-    // ================== 🎆 顶级豪华烟花系统（心形 + 黄金拖尾 + 爆闪 + 震动） ==================
+    // ================== 🎆 豪华烟花系统（心形 + 拖尾 + 轻量文字标签） ==================
     const canvas = document.getElementById("fireworksCanvas");
     const ctx = canvas.getContext("2d");
 
@@ -1260,20 +1308,38 @@
     let fireworks = [];
     let particles = [];
 
-    const settings = {
+    const fwSettings = {
       gravity: 0.14,
       friction: 0.93,
-      launchChance: 0.05,
-      heartChance: 0.2,     // 20% 生成心形烟花
-      megaChance: 0.2,      // 20% 生成“巨型礼花阵”
-      shockwave: true,
-      flash: true,
+      launchChance: 0.035,
+      heartChance: 0.2,
+      megaChance: 0.15,
+
+      // 轻量文字烟花配置
+      textEnable: true,
+      textChance: 0.25,
+      textWords: ["2025", "LOVE", "宝贝", "新年快乐","我喜欢你"]
     };
 
-    // 随机函数
-    function random(min, max) { return Math.random() * (max - min) + min; }
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
+    }
 
-    // 平面心形函数（核心）
+    // 在爆炸位置显示一个 DOM 文字标签
+    function showTextFirework(word, x, y) {
+      if (!fwSettings.textEnable || !word) return;
+      const el = document.createElement("div");
+      el.className = "text-firework";
+      el.textContent = word;
+      el.style.left = x + "px";
+      el.style.top = y + "px";
+      document.body.appendChild(el);
+      setTimeout(() => {
+        el.remove();
+      }, 1900);
+    }
+
+    // 心形函数
     function heartShape(t) {
       return {
         x: 16 * Math.pow(Math.sin(t), 3),
@@ -1293,8 +1359,6 @@
         this.targetY = targetY;
         this.useHeart = useHeart;
         this.mega = mega;
-
-        this.distanceToTarget = 0;
 
         this.angle = Math.atan2(targetY - startY, targetX - startX);
         this.speed = random(3, 5);
@@ -1316,29 +1380,31 @@
 
         const dx = this.x - this.targetX;
         const dy = this.y - this.targetY;
-        this.distanceToTarget = Math.sqrt(dx * dx + dy * dy);
+        const distanceToTarget = Math.sqrt(dx * dx + dy * dy);
 
-        if (this.distanceToTarget <= 10) {
-          // 爆炸
+        if (distanceToTarget <= 10) {
           this.explode();
           fireworks.splice(index, 1);
         }
       }
 
       explode() {
-    const count = this.mega ? 200 : 80;
+        // 随机加一个文字标签
+        if (fwSettings.textEnable && fwSettings.textWords.length > 0 && Math.random() < fwSettings.textChance) {
+          const word = fwSettings.textWords[Math.floor(Math.random() * fwSettings.textWords.length)];
+          showTextFirework(word, this.x, this.y);
+        }
 
-    // 删除闪光和震动
-
-    for (let i = 0; i < count; i++) {
-        const p = new Particle(
+        const count = this.mega ? 120 : 60;
+        for (let i = 0; i < count; i++) {
+          const p = new Particle(
             this.x,
             this.y,
             this.useHeart ? heartShape(i / 30) : null
-        );
-        particles.push(p);
-    }
-}
+          );
+          particles.push(p);
+        }
+      }
 
       draw() {
         ctx.beginPath();
@@ -1351,27 +1417,26 @@
     }
 
     class Particle {
-      constructor(x, y, heartPoint = null) {
+      constructor(x, y, shapePoint = null) {
         this.x = x;
         this.y = y;
 
         this.coordinates = [];
         for (let i = 0; i < 10; i++) this.coordinates.push([this.x, this.y]);
 
-        if (heartPoint) {
-          this.angle = Math.atan2(heartPoint.y, heartPoint.x);
+        if (shapePoint) {
+          this.angle = Math.atan2(shapePoint.y, shapePoint.x);
           this.speed = random(2, 8);
         } else {
           this.angle = random(0, Math.PI * 2);
           this.speed = random(2, 11);
         }
 
-        this.friction = settings.friction;
-        this.gravity = settings.gravity;
+        this.friction = fwSettings.friction;
+        this.gravity = fwSettings.gravity;
         this.alpha = 1;
         this.decay = random(0.008, 0.018);
         this.hue = random(0, 360);
-
         this.twinkle = Math.random() > 0.8;
       }
 
@@ -1404,9 +1469,8 @@
       }
     }
 
-    // 主循环
-    function animate() {
-      requestAnimationFrame(animate);
+    function animateFireworks() {
+      requestAnimationFrame(animateFireworks);
 
       ctx.globalCompositeOperation = "destination-out";
       ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
@@ -1414,15 +1478,15 @@
 
       ctx.globalCompositeOperation = "lighter";
 
-      if (Math.random() < settings.launchChance) {
+      if (particles.length < 900 && Math.random() < fwSettings.launchChance) {
         const startX = canvas.width / 2;
         const startY = canvas.height;
 
         const targetX = random(0, canvas.width);
         const targetY = random(canvas.height * 0.1, canvas.height * 0.5);
 
-        const isHeart = Math.random() < settings.heartChance;
-        const isMega = Math.random() < settings.megaChance;
+        const isHeart = Math.random() < fwSettings.heartChance;
+        const isMega = Math.random() < fwSettings.megaChance;
 
         fireworks.push(new Firework(startX, startY, targetX, targetY, isHeart, isMega));
       }
@@ -1437,23 +1501,59 @@
         p.draw();
       });
     }
-    animate();
+    animateFireworks();
 
+    // 点击屏幕生成烟花
+    document.addEventListener("click", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
 
-    // 点击任意位置生成烟花
-    canvas.addEventListener("click", (e) => {
       fireworks.push(
         new Firework(
           canvas.width / 2,
           canvas.height,
-          e.clientX,
-          e.clientY,
+          x,
+          y,
           Math.random() < 0.5,
           Math.random() < 0.3
         )
       );
     });
 
+    // ================== ⭐ 自定义文字烟花按钮逻辑 ==================
+    const customTextInput = document.getElementById("customTextInput");
+    const customTextCenterBtn = document.getElementById("customTextCenterBtn");
+    const customTextRandomBtn = document.getElementById("customTextRandomBtn");
+    const customTextHint = document.getElementById("customTextHint");
+
+    function triggerCustomTextFirework(mode) {
+      const text = customTextInput.value.trim();
+      if (!text) {
+        customTextHint.textContent = "可以先输入一句话，比如“2025 加油”“新年快乐”等～";
+        return;
+      }
+      customTextHint.textContent = "";
+
+      let x, y;
+      if (mode === "center") {
+        x = window.innerWidth / 2;
+        y = window.innerHeight * 0.35;
+      } else {
+        x = random(window.innerWidth * 0.2, window.innerWidth * 0.8);
+        y = random(window.innerHeight * 0.2, window.innerHeight * 0.6);
+      }
+
+      showTextFirework(text, x, y);
+    }
+
+    customTextCenterBtn?.addEventListener("click", () => {
+      triggerCustomTextFirework("center");
+    });
+
+    customTextRandomBtn?.addEventListener("click", () => {
+      triggerCustomTextFirework("random");
+    });
   </script>
 </body>
 
