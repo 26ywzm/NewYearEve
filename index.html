@@ -723,11 +723,181 @@
       }
     }
 
-    /* 自定义文字烟花输入区域的小提示 */
     .hint-text {
       font-size: 11px;
       opacity: 0.8;
       margin-top: 6px;
+    }
+
+    /* ========= 悬浮小球：自定义文字烟花控制 ========= */
+    .text-fire-bubble {
+      position: fixed;
+      width: 60px;
+      height: 60px;
+      top: calc(100% - 280px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fffae6, #ffb347, #ff5e62);
+      box-shadow:
+        0 0 20px rgba(255, 200, 80, 0.9),
+        0 0 40px rgba(255, 150, 50, 0.6),
+        inset 0 0 20px rgba(255, 255, 255, 0.7);
+      z-index: 150; /* ✨ 关键：不要压倒倒计时层 */
+      cursor: grab;
+
+      /* 关键：让内部小圆 & 星星居中 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      animation: floating 3s ease-in-out infinite alternate;
+      transition: left 0.2s ease, right 0.2s ease;
+    }
+
+
+    .text-fire-bubble:active {
+      cursor: grabbing;
+    }
+
+    @keyframes floating {
+      0% {
+        transform: translateY(0px)
+      }
+
+      100% {
+        transform: translateY(-6px)
+      }
+    }
+
+    .text-fire-bubble-inner {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #ffeaa7, #ff842f);
+      box-shadow:
+        0 0 12px rgba(255, 190, 120, 0.8),
+        0 0 28px rgba(255, 120, 80, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+      color: #5b1a00;
+    }
+
+    .text-fire-bubble:hover .text-fire-bubble-inner {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow:
+        0 0 16px rgba(255, 230, 160, 0.9),
+        0 0 34px rgba(255, 140, 90, 0.85);
+    }
+
+    /* 设置面板：fixed，方便跟随小球 */
+    .text-fire-panel {
+      position: fixed;
+      width: 260px;
+      padding: 10px 12px 10px;
+      border-radius: 16px;
+      background: rgba(10, 10, 30, 0.94);
+      border: 1px solid rgba(255, 217, 102, 0.3);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.75);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      backdrop-filter: blur(10px);
+      z-index: 10000;
+    }
+
+    /* 显示面板时 */
+    .text-fire-panel.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    /* 小球进入编辑状态时稍微缩小一点 */
+    .text-fire-bubble.editing .text-fire-bubble-inner {
+      transform: scale(0.9);
+      opacity: 0.85;
+    }
+
+    .text-fire-panel-title {
+      font-size: 13px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .text-fire-panel-title span:last-child {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    .text-fire-panel input[type="text"] {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 6px 10px;
+      background: rgba(0, 0, 0, 0.45);
+      color: #fff;
+      font-size: 12px;
+      outline: none;
+      margin-bottom: 6px;
+    }
+
+    .text-fire-panel-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    .text-fire-panel-row label {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+    }
+
+    .text-fire-panel-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .text-fire-panel small {
+      font-size: 11px;
+      opacity: 0.78;
+    }
+
+    .text-fire-panel-btn {
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: none;
+      font-size: 11px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .text-fire-panel-btn.save {
+      background: linear-gradient(135deg, #ffd966, #ffb347);
+      color: #3a1300;
+    }
+
+    .text-fire-panel-btn.cancel {
+      background: rgba(0, 0, 0, 0.4);
+      color: #f5f5f5;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .text-fire-bubble.editing .text-fire-bubble-inner {
+      transform: scale(0.9);
+      opacity: 0.85;
     }
   </style>
 </head>
@@ -838,7 +1008,7 @@
       </div>
     </section>
 
-    <!-- 新年祝福 -->
+    <!-- 新年祝福（阅读区域） -->
     <section id="blessings">
       <h2 class="section-title">
         <span class="section-title-icon">🎊</span>
@@ -891,7 +1061,7 @@
       </div>
     </section>
 
-    <!-- 愿望清单 + 自定义文字烟花面板 -->
+    <!-- 愿望清单 -->
     <section id="wishes">
       <h2 class="section-title">
         <span class="section-title-icon">📝</span>
@@ -921,8 +1091,7 @@
             在下面输入你的新年愿望，点击“保存愿望”，它会保存在当前设备的浏览器中，
             下次打开这个页面时依然可以看到（不会上传到服务器）。
           </p>
-          <textarea id="wishInput" rows="4"
-            placeholder="例如：希望顺利通过考试 / 找到理想工作 / 去一次想去很久的城市..."
+          <textarea id="wishInput" rows="4" placeholder="例如：希望顺利通过考试 / 找到理想工作 / 去一次想去很久的城市..."
             style="width: 100%; resize: vertical; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); padding: 8px 10px; background: rgba(0,0,0,0.35); color: #fff; font-size: 13px; outline: none;"></textarea>
           <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px; flex-wrap:wrap;">
             <button class="btn-ghost" id="clearWish">
@@ -934,33 +1103,38 @@
           </div>
           <p id="wishSavedHint" class="hint-text"></p>
         </article>
-
-        <!-- ⭐ 新增：自定义文字烟花控制面板 -->
-        <article class="card">
-          <h3 class="card-title">
-            🔤 自定义文字烟花
-            <span class="card-tag">点击立刻绽放</span>
-          </h3>
-          <p class="card-body" style="margin-bottom:6px;">
-            在这里输入一句话，比如 <b>“2025 加油”</b> / <b>“新年快乐”</b> / <b>“某某我喜欢你”</b>，
-            然后点击按钮，就会在屏幕中间或者随机位置绽放一朵「文字烟花」～✨
-          </p>
-          <input id="customTextInput" type="text"
-            placeholder="例如：2025 一切顺利 / 某某新年快乐"
-            style="width:100%; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18); padding: 8px 12px; background: rgba(0,0,0,0.35); color:#fff; font-size:13px; outline:none; margin-bottom:8px;">
-          <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end;">
-            <button class="btn-ghost" id="customTextCenterBtn">
-              居中绽放
-            </button>
-            <button class="btn-primary" id="customTextRandomBtn">
-              随机绽放
-            </button>
-          </div>
-          <p id="customTextHint" class="hint-text"></p>
-        </article>
       </div>
     </section>
   </main>
+  <!-- ✨ -->
+  <!-- 悬浮小球：自定义文字烟花 -->
+  <div class="text-fire-bubble" id="textFireBubble">
+    <div class="text-fire-bubble-inner" id="textFireBubbleInner">✨</div>
+    <div class="text-fire-panel" id="textFirePanel">
+      <div class="text-fire-panel-title">
+        <span>自定义文字烟花</span>
+        <span>设置后点击小球发射</span>
+      </div>
+      <input id="customTextInput" type="text" maxlength="20" placeholder="例如：2025 一切顺利 / 新年快乐" />
+      <div class="text-fire-panel-row">
+        <div>
+          <label>
+            <input type="radio" name="textMode" value="center" checked />
+            居中绽放
+          </label>
+          <label>
+            <input type="radio" name="textMode" value="random" />
+            随机绽放
+          </label>
+        </div>
+      </div>
+      <p id="customTextHint" class="hint-text"></p>
+      <div class="text-fire-panel-buttons">
+        <button class="text-fire-panel-btn cancel" id="customTextCancel">取消</button>
+        <button class="text-fire-panel-btn save" id="customTextSave">保存配置</button>
+      </div>
+    </div>
+  </div>
 
   <!-- 页脚 -->
   <footer>
@@ -1048,35 +1222,25 @@
       cdMinutes.classList.remove("active");
       cdSeconds.classList.remove("active");
 
-      if (days > 0) {
-        cdDays.classList.add("active");
-      } else if (hours > 0) {
-        cdHours.classList.add("active");
-      } else if (minutes > 0) {
-        cdMinutes.classList.add("active");
-      } else {
-        cdSeconds.classList.add("active");
-      }
+      if (days > 0) cdDays.classList.add("active");
+      else if (hours > 0) cdHours.classList.add("active");
+      else if (minutes > 0) cdMinutes.classList.add("active");
+      else cdSeconds.classList.add("active");
 
       if (days === 0 && hours < 6) {
         const text = "⏰ 跨年进入倒计时，记得和重要的人一起迎接哦～";
         statusEl.textContent = text;
         bigStatusEl.textContent = text;
       } else {
-        const text = "跨年即将到来…";
-        statusEl.textContent = text;
-        bigStatusEl.textContent = text;
+        statusEl.textContent = "跨年即将到来…";
+        bigStatusEl.textContent = "跨年即将到来…";
       }
     }
 
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // ================== 滚动 & 导航 ==================
-    document.getElementById("scrollToBlessings")?.addEventListener("click", () => {
-      document.getElementById("blessings")?.scrollIntoView({ behavior: "smooth" });
-    });
-
+    // ================== 滚动导航 ==================
     document.getElementById("scrollToWishes")?.addEventListener("click", () => {
       document.getElementById("wishes")?.scrollIntoView({ behavior: "smooth" });
     });
@@ -1095,12 +1259,10 @@
     });
 
     fullscreenCountdown?.addEventListener("click", (e) => {
-      if (e.target === fullscreenCountdown) {
-        fullscreenCountdown.classList.remove("active");
-      }
+      if (e.target === fullscreenCountdown) fullscreenCountdown.classList.remove("active");
     });
 
-    // ================== 新年祝福小窗覆盖层 ==================
+    // ================== 新年祝福弹窗 ==================
     const navBlessingsLink = document.getElementById("navBlessings");
     const blessingOverlay = document.getElementById("blessingOverlay");
     const blessingCloseBtn = document.getElementById("closeBlessing");
@@ -1126,16 +1288,13 @@
     let blessingCreateTimer = null;
 
     function cleanupBlessingWindows() {
-      if (blessingCreateTimer) {
-        clearInterval(blessingCreateTimer);
-        blessingCreateTimer = null;
-      }
+      if (blessingCreateTimer) clearInterval(blessingCreateTimer);
+      blessingCreateTimer = null;
       blessingOverlay.querySelectorAll(".blessing-window").forEach(el => el.remove());
     }
 
     function createBlessingWindows() {
       cleanupBlessingWindows();
-
       const count = 30;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
@@ -1169,40 +1328,31 @@
 
         const body = document.createElement("div");
         body.className = "blessing-window-body";
-        const textIndex = Math.floor(Math.random() * blessingsArr.length);
-        body.textContent = blessingsArr[textIndex];
-
-        const colorIndex = Math.floor(Math.random() * windowColors.length);
-        body.style.setProperty("--window-bg", windowColors[colorIndex]);
+        body.textContent = blessingsArr[Math.floor(Math.random() * blessingsArr.length)];
+        body.style.setProperty("--window-bg", windowColors[Math.floor(Math.random() * windowColors.length)]);
 
         win.appendChild(title);
         win.appendChild(body);
 
-        const w = 260;
-        const h = 110;
-        const maxLeft = Math.max(0, vw - w - 20);
-        const maxTop = Math.max(0, vh - h - 40);
-        const left = 10 + Math.random() * maxLeft;
-        const top = 20 + Math.random() * maxTop;
-
-        win.style.left = left + "px";
-        win.style.top = top + "px";
+        // 随机位置
+        const w = 260, h = 110;
+        win.style.left = (10 + Math.random() * (vw - w - 20)) + "px";
+        win.style.top = (20 + Math.random() * (vh - h - 40)) + "px";
 
         blessingOverlay.appendChild(win);
-
-        requestAnimationFrame(() => {
-          win.classList.add("show");
-        });
-
+        requestAnimationFrame(() => win.classList.add("show"));
         created++;
-      }, 170);
+      }, 160);
     }
 
-    navBlessingsLink?.addEventListener("click", (e) => {
-      e.preventDefault();
+    function openBlessingOverlay(e) {
+      if (e) e.preventDefault();
       createBlessingWindows();
       blessingOverlay.classList.add("active");
-    });
+    }
+
+    navBlessingsLink?.addEventListener("click", openBlessingOverlay);
+    document.getElementById("scrollToBlessings")?.addEventListener("click", openBlessingOverlay);
 
     blessingCloseBtn?.addEventListener("click", () => {
       blessingOverlay.classList.remove("active");
@@ -1221,49 +1371,47 @@
     const saveWishBtn = document.getElementById("saveWish");
     const clearWishBtn = document.getElementById("clearWish");
     const wishHint = document.getElementById("wishSavedHint");
+
     const WISH_KEY = "my_new_year_wish";
 
     let storageEnabled = true;
     try {
-      const testKey = "__test_wish_key__";
-      localStorage.setItem(testKey, "1");
-      localStorage.removeItem(testKey);
-    } catch (e) {
+      localStorage.setItem("__test__", "1");
+      localStorage.removeItem("__test__");
+    } catch {
       storageEnabled = false;
     }
 
     (function initWish() {
       if (!storageEnabled) {
-        wishHint.textContent = "当前浏览器不支持本地存储，但你仍然可以在这里写下愿望～";
+        wishHint.textContent = "当前浏览器不支持本地存储～";
         return;
       }
       const saved = localStorage.getItem(WISH_KEY);
       if (saved) {
         wishInput.value = saved;
-        wishHint.textContent = "已从本地读取你之前保存的愿望 ✨";
+        wishHint.textContent = "已从本地读取你保存的愿望 ✨";
       }
     })();
 
     saveWishBtn.addEventListener("click", () => {
       const text = wishInput.value.trim();
       if (!text) {
-        wishHint.textContent = "愿望内容为空哦，可以写点什么再保存～";
+        wishHint.textContent = "愿望内容为空～";
         return;
       }
       if (!storageEnabled) {
-        wishHint.textContent = "当前环境不支持本地保存，但愿望已经写在这里啦～";
+        wishHint.textContent = "当前环境不支持本地保存～";
         return;
       }
       localStorage.setItem(WISH_KEY, text);
-      wishHint.textContent = "已保存到本地浏览器，下次打开页面仍然可以看到 ✅";
+      wishHint.textContent = "愿望已保存到本地 👍";
     });
 
     clearWishBtn.addEventListener("click", () => {
       wishInput.value = "";
-      if (storageEnabled) {
-        localStorage.removeItem(WISH_KEY);
-      }
-      wishHint.textContent = "已清空愿望内容，可以重新开始书写新愿望～";
+      if (storageEnabled) localStorage.removeItem(WISH_KEY);
+      wishHint.textContent = "已清空～";
     });
 
     // ================== 音乐控制 ==================
@@ -1289,12 +1437,11 @@
           musicText.textContent = "点击播放音乐";
         }
       } catch (e) {
-        console.warn("播放音乐失败：", e);
-        musicText.textContent = "浏览器阻止自动播放，请再点击一次尝试～";
+        musicText.textContent = "浏览器阻止播放，请重试";
       }
     });
 
-    // ================== 🎆 豪华烟花系统（心形 + 拖尾 + 轻量文字标签） ==================
+    // ================== 🎆 烟花系统（心形 + 拖尾 + 轻量“文字标签”） ==================
     const canvas = document.getElementById("fireworksCanvas");
     const ctx = canvas.getContext("2d");
 
@@ -1311,35 +1458,33 @@
     const fwSettings = {
       gravity: 0.14,
       friction: 0.93,
-      launchChance: 0.035,
-      heartChance: 0.2,
-      megaChance: 0.15,
+      launchChance: 0.035,   // 自动发射频率
+      heartChance: 0.2,      // 心形烟花概率
+      megaChance: 0.15,      // 大烟花概率
 
-      // 轻量文字烟花配置
+      // 轻量“文字标签烟花”
       textEnable: true,
       textChance: 0.25,
-      textWords: ["2025", "LOVE", "宝贝", "新年快乐","我喜欢你"]
+      textWords: ["2025", "LOVE", "宝贝", "新年快乐"]
     };
 
     function random(min, max) {
       return Math.random() * (max - min) + min;
     }
 
-    // 在爆炸位置显示一个 DOM 文字标签
+    // 轻量 DOM 文字烟花，不走 canvas 粒子，性能开销极小
     function showTextFirework(word, x, y) {
-      if (!fwSettings.textEnable || !word) return;
+      if (!word) return;
       const el = document.createElement("div");
       el.className = "text-firework";
       el.textContent = word;
       el.style.left = x + "px";
       el.style.top = y + "px";
       document.body.appendChild(el);
-      setTimeout(() => {
-        el.remove();
-      }, 1900);
+      setTimeout(() => el.remove(), 1900);
     }
 
-    // 心形函数
+    // 心形路径
     function heartShape(t) {
       return {
         x: 16 * Math.pow(Math.sin(t), 3),
@@ -1389,9 +1534,16 @@
       }
 
       explode() {
-        // 随机加一个文字标签
-        if (fwSettings.textEnable && fwSettings.textWords.length > 0 && Math.random() < fwSettings.textChance) {
-          const word = fwSettings.textWords[Math.floor(Math.random() * fwSettings.textWords.length)];
+        // 轻量文字烟花
+        if (
+          fwSettings.textEnable &&
+          fwSettings.textWords.length > 0 &&
+          Math.random() < fwSettings.textChance
+        ) {
+          const word =
+            fwSettings.textWords[
+            Math.floor(Math.random() * fwSettings.textWords.length)
+            ];
           showTextFirework(word, this.x, this.y);
         }
 
@@ -1478,7 +1630,8 @@
 
       ctx.globalCompositeOperation = "lighter";
 
-      if (particles.length < 900 && Math.random() < fwSettings.launchChance) {
+      // 控制最大粒子数量，防止卡顿
+      if (particles.length < 800 && Math.random() < fwSettings.launchChance) {
         const startX = canvas.width / 2;
         const startY = canvas.height;
 
@@ -1503,8 +1656,14 @@
     }
     animateFireworks();
 
-    // 点击屏幕生成烟花
+    // 点击屏幕生成烟花（避开小球和面板）
     document.addEventListener("click", (e) => {
+      const bubble = document.getElementById("textFireBubble");
+      const panel = document.getElementById("textFirePanel");
+
+      if (bubble && bubble.contains(e.target)) return;
+      if (panel && panel.contains(e.target)) return;
+
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
@@ -1521,38 +1680,211 @@
       );
     });
 
-    // ================== ⭐ 自定义文字烟花按钮逻辑 ==================
-    const customTextInput = document.getElementById("customTextInput");
-    const customTextCenterBtn = document.getElementById("customTextCenterBtn");
-    const customTextRandomBtn = document.getElementById("customTextRandomBtn");
-    const customTextHint = document.getElementById("customTextHint");
+    // ================== 🎈 悬浮小球 + 多条文字烟花系统 ==================
+    const textFireBubble = document.getElementById("textFireBubble");
+    const textFirePanel = document.getElementById("textFirePanel");
 
-    function triggerCustomTextFirework(mode) {
-      const text = customTextInput.value.trim();
-      if (!text) {
-        customTextHint.textContent = "可以先输入一句话，比如“2025 加油”“新年快乐”等～";
-        return;
+    const customTextInput = document.getElementById("customTextInput");
+    const customTextSave = document.getElementById("customTextSave");
+    const customTextCancel = document.getElementById("customTextCancel");
+    const customTextHint = document.getElementById("customTextHint");
+    const textModeInputs = document.querySelectorAll("input[name='textMode']");
+
+    // 多条文字轮询配置
+    let customConfig = {
+      texts: [],
+      mode: "center",
+      index: 0
+    };
+
+    let editingConfig = false;
+
+    // ========= 面板定位：只在打开/窗口变化时根据小球位置摆一次 =========
+    function updatePanelPosition() {
+      // 只在面板处于“编辑状态 / 打开”时才跟随
+      if (!editingConfig) return;
+
+      const bubbleRect = textFireBubble.getBoundingClientRect();
+      const panelWidth = 260;   // 面板宽度
+      const gapX = 4;          // 小球和面板之间的水平距离（想近一点就改小，例如 18）
+      const offsetY = - 200;      // 面板相对于小球顶部的垂直偏移（想更靠上就改大负数）
+
+      const centerX = bubbleRect.left + bubbleRect.width / 2;
+
+      let left;
+
+      // 小球在左半屏 → 面板放右边；小球在右半屏 → 面板放左边
+      if (centerX < window.innerWidth / 2) {
+        left = bubbleRect.right + gapX;
+      } else {
+        left = bubbleRect.left - panelWidth - gapX;
       }
-      customTextHint.textContent = "";
+
+      // ❗垂直方向完全跟着小球走，不做任何限制
+      const top = bubbleRect.top + offsetY;
+
+      textFirePanel.style.left = left + "px";
+      textFirePanel.style.top = top + "px";
+    }
+
+    // ========= 打开 / 关闭面板 =========
+    function openTextPanel() {
+      editingConfig = true;
+      textFirePanel.classList.add("show");
+      textFireBubble.classList.add("editing");
+
+      // 把已有配置填回输入框
+      customTextInput.value = customConfig.texts.join("\n");
+      textModeInputs.forEach(r => {
+        r.checked = r.value === customConfig.mode;
+      });
+
+      updatePanelPosition();
+      customTextInput.focus();
+    }
+
+    function closeTextPanel() {
+      editingConfig = false;
+      textFirePanel.classList.remove("show");
+      textFireBubble.classList.remove("editing");
+    }
+
+    // ========= 发射文字烟花（轮流） =========
+    function triggerCustomTextFirework() {
+      if (!customConfig.texts.length) return;
+
+      const word = customConfig.texts[customConfig.index];
+      customConfig.index = (customConfig.index + 1) % customConfig.texts.length;
 
       let x, y;
-      if (mode === "center") {
+      if (customConfig.mode === "center") {
         x = window.innerWidth / 2;
         y = window.innerHeight * 0.35;
       } else {
         x = random(window.innerWidth * 0.2, window.innerWidth * 0.8);
         y = random(window.innerHeight * 0.2, window.innerHeight * 0.6);
       }
-
-      showTextFirework(text, x, y);
+      showTextFirework(word, x, y);
     }
 
-    customTextCenterBtn?.addEventListener("click", () => {
-      triggerCustomTextFirework("center");
+    // ========= 小球点击 =========
+    textFireBubble.addEventListener("click", (e) => {
+      if (e.altKey) {
+        openTextPanel();
+        return;
+      }
+      if (editingConfig) return;
+
+      if (customConfig.texts.length > 0) {
+        triggerCustomTextFirework();
+      } else {
+        openTextPanel();
+      }
     });
 
-    customTextRandomBtn?.addEventListener("click", () => {
-      triggerCustomTextFirework("random");
+    // 右键打开设置
+    textFireBubble.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      openTextPanel();
+    });
+
+    // ========= 保存 / 取消配置 =========
+    customTextSave.addEventListener("click", (e) => {
+      e.stopPropagation();
+
+      const raw = customTextInput.value.trim();
+      if (!raw) {
+        customTextHint.textContent = "内容不能为空哦～可以写多行，每行一条烟花✨";
+        return;
+      }
+
+      customConfig.texts = raw
+        .split("\n")
+        .map(v => v.trim())
+        .filter(v => v.length > 0);
+
+      let mode = "center";
+      textModeInputs.forEach((r) => {
+        if (r.checked) mode = r.value;
+      });
+      customConfig.mode = mode;
+
+      customTextHint.textContent = "已保存，点击小球即可轮流发射 🎉";
+
+      setTimeout(() => {
+        closeTextPanel();
+      }, 350);
+    });
+
+    customTextCancel.addEventListener("click", (e) => {
+      e.stopPropagation();
+      closeTextPanel();
+    });
+
+    customTextInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        customTextSave.click();
+      }
+    });
+
+    // 面板内部阻止冒泡（防止点到背景）
+    textFirePanel.addEventListener("click", (e) => e.stopPropagation());
+
+    // ========= 小球拖拽 + 自动吸附（注意：不再更新面板位置） =========
+    let dragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    function clamp(v, min, max) {
+      return Math.max(min, Math.min(max, v));
+    }
+
+    textFireBubble.addEventListener("mousedown", (e) => {
+      if (e.button === 2) return; // 右键不拖动
+
+      dragging = true;
+      const rect = textFireBubble.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+
+      textFireBubble.style.transition = "none";
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (!dragging) return;
+
+      const x = e.clientX - offsetX;
+      const y = e.clientY - offsetY;
+
+      const maxX = window.innerWidth - 60;
+      const maxY = window.innerHeight - 60;
+
+      textFireBubble.style.left = clamp(x, 0, maxX) + "px";
+      textFireBubble.style.top = clamp(y, 0, maxY) + "px";
+      // ❌ 不再调用 updatePanelPosition，面板保持原地
+    });
+
+    document.addEventListener("mouseup", () => {
+      if (!dragging) return;
+      dragging = false;
+
+      const rect = textFireBubble.getBoundingClientRect();
+      textFireBubble.style.transition = "left 0.25s ease, right 0.25s ease";
+
+      if (rect.left < window.innerWidth / 2) {
+        textFireBubble.style.left = "10px";
+        textFireBubble.style.right = "auto";
+      } else {
+        textFireBubble.style.left = "auto";
+        textFireBubble.style.right = "10px";
+      }
+      // 松手时也不再 reposition 面板
+    });
+
+    // 窗口大小改变时，如果面板是打开的，再跟随一次小球
+    window.addEventListener("resize", () => {
+      if (editingConfig) updatePanelPosition();
     });
   </script>
 </body>
