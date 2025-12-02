@@ -171,6 +171,27 @@
       }
     }
 
+    /* 手机端：全屏倒计时横向条形布局 */
+    @media (max-width: 640px) {
+      .fullscreen-time {
+        flex-wrap: nowrap;
+        gap: 4px;
+      }
+
+      .fullscreen-time span {
+        font-size: 32px;
+      }
+
+      .fullscreen-time small {
+        font-size: 14px;
+      }
+
+      .fullscreen-label {
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+    }
+
     /* 主体容器 */
     main {
       max-width: 1100px;
@@ -741,7 +762,8 @@
         0 0 20px rgba(255, 200, 80, 0.9),
         0 0 40px rgba(255, 150, 50, 0.6),
         inset 0 0 20px rgba(255, 255, 255, 0.7);
-      z-index: 150; /* ✨ 关键：不要压倒倒计时层 */
+      z-index: 150;
+      /* ✨ 关键：不要压倒倒计时层 */
       cursor: grab;
 
       /* 关键：让内部小圆 & 星星居中 */
@@ -1147,6 +1169,9 @@
   <script>
     // ================== 跨年时间设置 ==================
     const targetDate = new Date("2025-12-31T23:59:59");
+    // 简单判断是否为手机端
+    const isMobile = window.innerWidth <= 768 || /Mobi|Android|iPhone/i.test(navigator.userAgent);
+
 
     const targetTextEl = document.getElementById("countdownTargetText");
     if (targetTextEl) {
@@ -1295,7 +1320,8 @@
 
     function createBlessingWindows() {
       cleanupBlessingWindows();
-      const count = 30;
+      // ✅ 手机端少一些弹窗
+      const count = isMobile ? 8 : 30;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       let created = 0;
@@ -1886,6 +1912,60 @@
     window.addEventListener("resize", () => {
       if (editingConfig) updatePanelPosition();
     });
+
+    // ================== 手机端：touch 拖拽支持 ==================
+    textFireBubble.addEventListener("touchstart", (e) => {
+      // 只取第一个触点
+      const t = e.touches[0];
+      dragging = true;
+
+      const rect = textFireBubble.getBoundingClientRect();
+      offsetX = t.clientX - rect.left;
+      offsetY = t.clientY - rect.top;
+
+      textFireBubble.style.transition = "none";
+
+      // 防止滚动页面
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener("touchmove", (e) => {
+      if (!dragging) return;
+
+      const t = e.touches[0];
+      const x = t.clientX - offsetX;
+      const y = t.clientY - offsetY;
+
+      const maxX = window.innerWidth - 60;
+      const maxY = window.innerHeight - 60;
+
+      textFireBubble.style.left = clamp(x, 0, maxX) + "px";
+      textFireBubble.style.top = clamp(y, 0, maxY) + "px";
+
+      updatePanelPosition();
+
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener("touchend", () => {
+      if (!dragging) return;
+      dragging = false;
+
+      const rect = textFireBubble.getBoundingClientRect();
+
+      textFireBubble.style.transition = "left 0.25s ease, right 0.25s ease";
+
+      if (rect.left < window.innerWidth / 2) {
+        textFireBubble.style.left = "10px";
+        textFireBubble.style.right = "auto";
+      } else {
+        textFireBubble.style.left = "auto";
+        textFireBubble.style.right = "10px";
+      }
+
+      setTimeout(updatePanelPosition, 260);
+    });
+
   </script>
 </body>
 
