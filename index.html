@@ -564,6 +564,26 @@
       opacity: 0.9;
     }
 
+    /* 手机端：全屏倒计时横向紧凑布局 */
+    .fullscreen-countdown.mobile-horizontal .fullscreen-time {
+      flex-wrap: nowrap;
+      gap: 4px;
+    }
+
+    .fullscreen-countdown.mobile-horizontal .fullscreen-time span {
+      font-size: 28px;
+    }
+
+    .fullscreen-countdown.mobile-horizontal .fullscreen-time small {
+      font-size: 13px;
+    }
+
+    .fullscreen-countdown.mobile-horizontal .fullscreen-label {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+
     .fullscreen-status {
       font-size: 14px;
       margin-top: 6px;
@@ -1167,11 +1187,11 @@
   </footer>
 
   <script>
-    // ================== 跨年时间设置 ==================
-    const targetDate = new Date("2025-12-31T23:59:59");
     // 简单判断是否为手机端
     const isMobile = window.innerWidth <= 768 || /Mobi|Android|iPhone/i.test(navigator.userAgent);
 
+    // ================== 跨年时间设置 ==================
+    const targetDate = new Date("2025-12-31T23:59:59");
 
     const targetTextEl = document.getElementById("countdownTargetText");
     if (targetTextEl) {
@@ -1273,6 +1293,11 @@
     const navCountdownLink = document.getElementById("navCountdown");
     const fullscreenCountdown = document.getElementById("fullscreenCountdown");
     const closeFullscreenBtn = document.getElementById("closeFullscreen");
+    // 如果是手机端，给全屏倒计时加上一个特殊样式 class
+    if (isMobile && fullscreenCountdown) {
+      fullscreenCountdown.classList.add("mobile-horizontal");
+    }
+
 
     navCountdownLink?.addEventListener("click", (e) => {
       e.preventDefault();
@@ -1915,7 +1940,6 @@
 
     // ================== 手机端：touch 拖拽支持 ==================
     textFireBubble.addEventListener("touchstart", (e) => {
-      // 只取第一个触点
       const t = e.touches[0];
       dragging = true;
 
@@ -1924,10 +1948,8 @@
       offsetY = t.clientY - rect.top;
 
       textFireBubble.style.transition = "none";
-
-      // 防止滚动页面
-      e.preventDefault();
-    }, { passive: false });
+      // ⚠️ 不要在这里 preventDefault，保留点击触发 click 事件
+    }, { passive: true });
 
     document.addEventListener("touchmove", (e) => {
       if (!dragging) return;
@@ -1944,6 +1966,7 @@
 
       updatePanelPosition();
 
+      // 只在真的拖动时禁止页面滚动
       e.preventDefault();
     }, { passive: false });
 
@@ -1965,6 +1988,7 @@
 
       setTimeout(updatePanelPosition, 260);
     });
+
 
   </script>
 </body>
